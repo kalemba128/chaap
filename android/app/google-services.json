@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1004873097862",
+    "firebase_url": "https://chaap-82b16.firebaseio.com",
+    "project_id": "chaap-82b16",
+    "storage_bucket": "chaap-82b16.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1004873097862:android:5f9418ab5c6e90499fe707",
+        "android_client_info": {
+          "package_name": "com.kalemba128.chaap"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1004873097862-2vrdbtp7um7iji8qct747m4jmcgbn4q9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_-ME1UbP6erC0jBp-aW1c9VAOBhHgwxk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1004873097862-2vrdbtp7um7iji8qct747m4jmcgbn4q9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
