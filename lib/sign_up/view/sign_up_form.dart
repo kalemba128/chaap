@@ -26,6 +26,8 @@ class SignUpForm extends StatelessWidget {
             children: [
               _Title(),
               const SizedBox(height: 100),
+              _NameInput(),
+              const SizedBox(height: 8.0),
               _EmailInput(),
               const SizedBox(height: 8.0),
               _PasswordInput(),
@@ -58,6 +60,28 @@ class _Title extends StatelessWidget {
   }
 }
 
+class _NameInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SignUpCubit, SignUpState>(
+      buildWhen: (previous, current) => previous.name != current.name,
+      builder: (context, state) {
+        return TextField(
+          key: const Key('signUpForm_nameInput_textField'),
+          onChanged: (name) => context.read<SignUpCubit>().nameChanged(name),
+          keyboardType: TextInputType.name,
+          decoration: InputDecoration(
+            prefixIcon: Icon(Icons.account_circle),
+            hintText: 'Name',
+            helperText: '',
+            errorText: state.email.invalid ? 'invalid name' : null,
+          ),
+        );
+      },
+    );
+  }
+}
+
 class _EmailInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -70,7 +94,7 @@ class _EmailInput extends StatelessWidget {
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
             prefixIcon: Icon(Icons.email),
-            hintText: 'Phone Number or Email',
+            hintText: 'Email',
             helperText: '',
             errorText: state.email.invalid ? 'invalid email' : null,
           ),

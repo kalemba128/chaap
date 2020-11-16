@@ -4,6 +4,7 @@ enum ConfirmPasswordValidationError { invalid }
 
 class SignUpState extends Equatable {
   const SignUpState({
+    this.name = const Name.pure(),
     this.email = const Email.pure(),
     this.password = const Password.pure(),
     this.confirmedPassword = const ConfirmedPassword.pure(),
@@ -12,6 +13,7 @@ class SignUpState extends Equatable {
     this.obscuredConfirmedPassword = true,
   });
 
+  final Name name;
   final Email email;
   final Password password;
   final ConfirmedPassword confirmedPassword;
@@ -24,6 +26,7 @@ class SignUpState extends Equatable {
 
   @override
   List<Object> get props => [
+        name,
         email,
         password,
         confirmedPassword,
@@ -33,6 +36,7 @@ class SignUpState extends Equatable {
       ];
 
   SignUpState copyWith({
+    Name name,
     Email email,
     Password password,
     ConfirmedPassword confirmedPassword,
@@ -41,6 +45,7 @@ class SignUpState extends Equatable {
     bool obscuredConfirmedPassword,
   }) {
     return SignUpState(
+      name: name ?? this.name,
       email: email ?? this.email,
       password: password ?? this.password,
       confirmedPassword: confirmedPassword ?? this.confirmedPassword,
