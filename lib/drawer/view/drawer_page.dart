@@ -1,3 +1,4 @@
+import 'package:chaap/profile_editing/profile_editing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chaap/authentication/authentication.dart';
@@ -103,6 +104,12 @@ class _OptionsList extends StatelessWidget {
           title: "Privacy",
           iconColor: Colors.blue,
           navigateTo: HomePage(),
+        ),
+        _Option(
+          icon: Icons.edit,
+          title: "Edit profie",
+          iconColor: Colors.orange,
+          navigateTo: ProfileEditingPage(),
         ),
         _Option(
           icon: Icons.list_alt,
