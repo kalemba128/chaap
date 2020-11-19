@@ -1,4 +1,5 @@
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:chaap/profile_editing/bloc/profile_editing_bloc.dart';
 import 'package:chaap/profile_editing/profile_editing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,9 +22,9 @@ class ProfileEditingPage extends StatelessWidget {
         ),
         title: const Text('Your account'),
       ),
-      body: BlocProvider<ProfileEditingCubit>(
-        create: (_) =>
-            ProfileEditingCubit(context.read<AuthenticationRepository>()),
+      body: BlocProvider<ProfileEditingBloc>(
+        create: (_) => ProfileEditingBloc(
+            authenticationRepository: context.read<AuthenticationRepository>()),
         child: ProfileEditingForm(),
       ),
     );

@@ -1,12 +1,82 @@
-import 'package:chaap/profile_editing/profile_editing.dart';
+import 'package:chaap/profile_editing/bloc/profile_editing_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:chaap/sign_up/sign_up.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 import 'package:formz/formz.dart';
 
 class ProfileEditingForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _NameInput(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NameInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // final user = context.select((AuthenticationBloc bloc) => bloc.state.user);
+    return BlocBuilder<ProfileEditingBloc, ProfileEditingState>(
+      buildWhen: (previous, current) =>
+          (previous.name != current.name) ||
+          (previous.nameStatus != current.nameStatus),
+      builder: (context, state) {
+        Widget suffixIcon;
+
+        if (state.nameStatus == FormzStatus.pure)
+          suffixIcon = Icon(Icons.edit);
+        else if (state.nameStatus == FormzStatus.valid)
+          suffixIcon = Icon(Icons.check);
+        else if (state.nameStatus == FormzStatus.invalid)
+          suffixIcon = Icon(Icons.close_rounded);
+        else if (state.nameStatus == FormzStatus.submissionInProgress)
+          suffixIcon = SizedBox(
+            width: 0,
+            child: SpinKitFadingCircle(
+              color: Colors.white,
+              size: 30.0,
+            ),
+          );
+        else if (state.nameStatus == FormzStatus.submissionSuccess)
+          suffixIcon = Icon(Icons.check_circle_outline, color: Colors.green);
+        else if (state.nameStatus == FormzStatus.submissionFailure)
+          suffixIcon = Icon(Icons.close_rounded, color: Colors.red);
+
+        return TextFormField(
+          onChanged: (name) =>
+              context.read<ProfileEditingBloc>().add(NameChanged(name)),
+          onEditingComplete: () {
+            if (state.name.valid) {
+              context.read<ProfileEditingBloc>().add(NameUpdated());
+            }
+          },
+          keyboardType: TextInputType.name,
+          decoration: InputDecoration(
+            prefixIcon: Icon(Icons.account_circle),
+            suffixIcon: suffixIcon,
+            labelText: 'Your name',
+            helperText: '',
+            hintText: state.name.value,
+            errorText: state.name.invalid ? "invalid name" : '',
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+          ),
+        );
+      },
+    );
+  }
+}
+
+/*
     return BlocListener<ProfileEditingCubit, ProfileEditingState>(
       listener: (context, state) {},
       child: Container(
@@ -18,16 +88,11 @@ class ProfileEditingForm extends StatelessWidget {
             children: [
               _Avatar(),
               _NameInput(),
-              _EmailInput(),
-              _DescriptionInput(),
-              _CodeInput(),
             ],
           ),
         ),
       ),
-    );
-  }
-}
+    );*/
 
 class _Avatar extends StatelessWidget {
   @override
@@ -39,33 +104,13 @@ class _Avatar extends StatelessWidget {
     );
   }
 }
+/*
 
-class _NameInput extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<ProfileEditingCubit, ProfileEditingState>(
-      buildWhen: (previous, current) => previous.name != current.name,
-      builder: (context, state) {
-        return TextFormField(
-          //onChanged: (name) => context.read<SignUpCubit>().nameChanged(name),
-          keyboardType: TextInputType.name,
-          decoration: InputDecoration(
-            prefixIcon: Icon(Icons.account_circle),
-            suffixIcon: Icon(Icons.edit),
-            labelText: 'Your name',
-            helperText: '',
-            errorText: state.email.invalid ? 'invalid name' : null,
-            floatingLabelBehavior: FloatingLabelBehavior.always,
-          ),
-        );
-      },
-    );
-  }
-}
 
 class _EmailInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final user = context.select((AuthenticationBloc bloc) => bloc.state.user);
     return BlocBuilder<ProfileEditingCubit, ProfileEditingState>(
       buildWhen: (previous, current) => previous.email != current.email,
       builder: (context, state) {
@@ -77,6 +122,7 @@ class _EmailInput extends StatelessWidget {
             suffixIcon: Icon(Icons.edit),
             labelText: 'Your email',
             helperText: '',
+            hintText: user.email ?? "email@xd.pl",
             errorText: state.email.invalid ? 'invalid email' : null,
             floatingLabelBehavior: FloatingLabelBehavior.always,
           ),
@@ -131,3 +177,4 @@ class _CodeInput extends StatelessWidget {
     );
   }
 }
+*/

@@ -168,6 +168,7 @@ void main() {
         verify: (_) {
           verify(
             authenticationRepository.signUp(
+              name: validEmailString,
               email: validEmailString,
               password: validPasswordString,
             ),
@@ -207,6 +208,7 @@ void main() {
         'when signUp fails',
         build: () {
           when(authenticationRepository.signUp(
+            name: anyNamed('name'),
             email: anyNamed('email'),
             password: anyNamed('password'),
           )).thenThrow(Exception('oops'));

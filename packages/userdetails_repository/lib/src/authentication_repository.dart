@@ -21,9 +21,9 @@ class LogOutFailure implements Exception {}
 /// {@template authentication_repository}
 /// Repository which manages user authentication.
 /// {@endtemplate}
-class AuthenticationRepository {
+class UserDetailsRepository {
   /// {@macro authentication_repository}
-  AuthenticationRepository({
+  UserDetailsRepository({
     firebase_auth.FirebaseAuth firebaseAuth,
     GoogleSignIn googleSignIn,
   })  : _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance,
@@ -32,25 +32,25 @@ class AuthenticationRepository {
   final firebase_auth.FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
 
-  /// Stream of [User] which will emit the current user when
+  /// Stream of [UserDetails] which will emit the current user when
   /// the authentication state changes.
   ///
 
-  /// Emits [User.empty] if the user is not authenticated.
-  Stream<User> get user {
+  /// Emits [UserDetails.empty] if the user is not authenticated.
+  Stream<UserDetails> get user {
     return _firebaseAuth.authStateChanges().map((firebaseUser) {
-      return firebaseUser == null ? User.empty : firebaseUser.toUser;
+      return firebaseUser == null ? UserDetails.empty : firebaseUser.toUser;
     });
   }
 
-  /// Emits [User.empty] if the user is not authenticated.
-  Stream<User> get userDetails {
+  /// Emits [UserDetails.empty] if the user is not authenticated.
+  Stream<UserDetails> get userDetails {
     return _firebaseAuth.userChanges().map((firebaseUser) {
-      return firebaseUser == null ? User.empty : firebaseUser.toUser;
+      return firebaseUser == null ? UserDetails.empty : firebaseUser.toUser;
     });
   }
 
-  User get currentUser {
+  UserDetails get currentUser {
     return _firebaseAuth.currentUser.toUser;
   }
 
@@ -58,9 +58,9 @@ class AuthenticationRepository {
     try {
       final usr = _firebaseAuth.currentUser;
       await usr.updateProfile(displayName: name, photoURL: photoURL);
-      print("AuthRepo: User upadated");
+      print("AuthRepo: UserDetails upadated");
     } catch (e) {
-      print("AuthenticationRepository: $e");
+      print("UserDetailsRepository: $e");
       return 0;
     }
   }
@@ -121,7 +121,7 @@ class AuthenticationRepository {
   }
 
   /// Signs out the current user which will emit
-  /// [User.empty] from the [user] Stream.
+  /// [UserDetails.empty] from the [user] Stream.
   ///
   /// Throws a [LogOutFailure] if an exception occurs.
   Future<void> logOut() async {
@@ -138,7 +138,8 @@ class AuthenticationRepository {
 
 /// parse firebase user to my model user
 extension on firebase_auth.User {
-  User get toUser {
-    return User(id: uid, email: email, name: displayName, photo: photoURL);
+  UserDetails get toUser {
+    return UserDetails(
+        id: uid, email: email, name: displayName, photo: photoURL);
   }
 }

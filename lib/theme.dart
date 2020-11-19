@@ -71,9 +71,12 @@ ThemeData darkTheme = ThemeData(
 //text theme that contrast with accent Color
       ),
   inputDecorationTheme: InputDecorationTheme(
+    focusedBorder: UnderlineInputBorder(
+      borderSide: BorderSide(color: Colors.green, width: 2.0),
+    ),
 
 // default values for InputDecorator, TextField, and TextFormField
-      ),
+  ),
   iconTheme: IconThemeData(
 
 //icon themes that contrast with card and canvas
