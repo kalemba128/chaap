@@ -23,6 +23,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  shared_preferences: ^0.5.12+4
   flutter_spinkit: "^4.1.2"
   bloc: ^6.1.0
   equatable: ^1.2.3
@@ -34,6 +35,8 @@ dependencies:
   pedantic: ^1.9.0
   authentication_repository:
     path: packages/authentication_repository
+  user_details_repository:
+    path: packages/user_details_repository
 
 
   # The following adds the Cupertino Icons font to your application.

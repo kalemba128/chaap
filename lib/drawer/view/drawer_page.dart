@@ -40,7 +40,7 @@ class _UserInfo extends StatelessWidget {
           size: 150,
         ),
         const SizedBox(height: 4.0),
-        Text(user.name, style: textTheme.headline6),
+        Text(user.name ?? "John", style: textTheme.headline6),
         const SizedBox(height: 20),
       ],
     );

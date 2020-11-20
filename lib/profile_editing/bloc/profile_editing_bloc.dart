@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:user_details_repository/user_details_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:chaap/authentication/authentication.dart';
-import 'package:chaap/profile_editing/profile_editing.dart';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,7 +20,8 @@ class ProfileEditingBloc
       : assert(authenticationRepository != null),
         _authenticationRepository = authenticationRepository,
         super(ProfileEditingState(
-            name: Name.dirty(authenticationRepository.currentUser.name)));
+            name: Name.dirty(
+                authenticationRepository.currentUser.name ?? "John")));
 
   final AuthenticationRepository _authenticationRepository;
 
@@ -50,9 +51,29 @@ class ProfileEditingBloc
     emit(state.copyWith(nameStatus: FormzStatus.submissionInProgress));
     try {
       await _authenticationRepository.updateUserProfile(name: name);
+      createUserTest();
       emit(state.copyWith(nameStatus: FormzStatus.submissionSuccess));
     } on Exception {
       emit(state.copyWith(nameStatus: FormzStatus.submissionFailure));
     }
+  }
+
+  void createUserTest() {
+    final id = _authenticationRepository.currentUser.id;
+    print("Create User id: $id");
+    UserDetailsRepository userRepo = UserDetailsRepository();
+    userRepo.createUserDetails(UserDetails(
+        id: id, name: state.name.value, email: "Bro", photo: "gzzz"));
+
+    /* UserDetailsRepository userRepo = UserDetailsRepository();
+    userRepo.createUser(
+      UserDetails(
+          id: "kotek",
+          name: "JohnSmith",
+          email: "JohnSmith",
+          photo: "JohnSmithPhot"),
+    );
+    }
+  */
   }
 }
