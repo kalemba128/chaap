@@ -1,4 +1,4 @@
-import 'package:authentication_repository/authentication_repository.dart';
+import 'package:chaap/repositories/authentication_repository/authentication_repository.dart';
 import 'package:chaap/profile_editing/bloc/profile_editing_bloc.dart';
 import 'package:chaap/profile_editing/profile_editing.dart';
 import 'package:flutter/material.dart';

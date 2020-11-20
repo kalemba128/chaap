@@ -1,5 +1,5 @@
-import 'package:authentication_repository/authentication_repository.dart';
-import 'package:user_details_repository/user_details_repository.dart';
+import 'package:chaap/repositories/authentication_repository/authentication_repository.dart';
+import 'package:chaap/repositories/user_details_repository/user_details_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:chaap/authentication/authentication.dart';
@@ -98,9 +98,19 @@ class SignUpCubit extends Cubit<SignUpState> {
         password: state.password.value,
       );
 
+      createUserDetails();
+
       emit(state.copyWith(status: FormzStatus.submissionSuccess));
     } on Exception {
       emit(state.copyWith(status: FormzStatus.submissionFailure));
     }
+  }
+
+  void createUserDetails() {
+    final uid = _authenticationRepository.currentUser.uid;
+    UserDetailsRepository usrRepo = UserDetailsRepository(uid: uid);
+    UserDetails details =
+        UserDetails(name: state.name.value, photo: 'avatarorsth');
+    usrRepo.createUserDetails(details);
   }
 }

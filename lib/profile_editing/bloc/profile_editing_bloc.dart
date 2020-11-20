@@ -1,7 +1,8 @@
 import 'dart:async';
 
-import 'package:authentication_repository/authentication_repository.dart';
-import 'package:user_details_repository/user_details_repository.dart';
+import 'package:chaap/repositories/authentication_repository/authentication_repository.dart';
+
+import 'package:chaap/repositories/user_details_repository/user_details_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:chaap/authentication/authentication.dart';
 
@@ -19,9 +20,7 @@ class ProfileEditingBloc
       {@required AuthenticationRepository authenticationRepository})
       : assert(authenticationRepository != null),
         _authenticationRepository = authenticationRepository,
-        super(ProfileEditingState(
-            name: Name.dirty(
-                authenticationRepository.currentUser.name ?? "John")));
+        super(ProfileEditingState(name: Name.dirty()));
 
   final AuthenticationRepository _authenticationRepository;
 
@@ -50,30 +49,17 @@ class ProfileEditingBloc
     if (!state.nameStatus.isValidated) return;
     emit(state.copyWith(nameStatus: FormzStatus.submissionInProgress));
     try {
-      await _authenticationRepository.updateUserProfile(name: name);
-      createUserTest();
+      await updateUserDetails();
       emit(state.copyWith(nameStatus: FormzStatus.submissionSuccess));
     } on Exception {
       emit(state.copyWith(nameStatus: FormzStatus.submissionFailure));
     }
   }
 
-  void createUserTest() {
-    final id = _authenticationRepository.currentUser.id;
-    print("Create User id: $id");
-    UserDetailsRepository userRepo = UserDetailsRepository();
-    userRepo.createUserDetails(UserDetails(
-        id: id, name: state.name.value, email: "Bro", photo: "gzzz"));
-
-    /* UserDetailsRepository userRepo = UserDetailsRepository();
-    userRepo.createUser(
-      UserDetails(
-          id: "kotek",
-          name: "JohnSmith",
-          email: "JohnSmith",
-          photo: "JohnSmithPhot"),
-    );
-    }
-  */
+  Future<void> updateUserDetails() async {
+    final uid = _authenticationRepository.currentUser.uid;
+    final usrRepo = UserDetailsRepository(uid: uid);
+    final details = UserDetails(name: state.name.value, photo: 'newPhoto');
+    await usrRepo.updateUserDetails(details);
   }
 }

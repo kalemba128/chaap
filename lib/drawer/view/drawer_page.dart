@@ -1,4 +1,5 @@
 import 'package:chaap/profile_editing/profile_editing.dart';
+import 'package:chaap/repositories/user_details_repository/user_details_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chaap/authentication/authentication.dart';
@@ -31,7 +32,10 @@ class _UserInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+
     final user = context.select((AuthenticationBloc bloc) => bloc.state.user);
+    final usrRepo = UserDetailsRepository(uid: user.uid);
+
     return Column(
       children: [
         Icon(
@@ -40,7 +44,14 @@ class _UserInfo extends StatelessWidget {
           size: 150,
         ),
         const SizedBox(height: 4.0),
-        Text(user.name ?? "John", style: textTheme.headline6),
+        StreamBuilder(
+          initialData: UserDetails(name: "John"),
+          stream: usrRepo.getStream(),
+          builder: (_, snapshot) {
+            UserDetails details = snapshot.data;
+            return Text(details.name, style: textTheme.headline6);
+          },
+        ),
         const SizedBox(height: 20),
       ],
     );

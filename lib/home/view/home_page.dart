@@ -17,7 +17,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: FlatButton(
-            child: Avatar(photo: user.photo),
+            child: Avatar(photo: "user.photo"),
             onPressed: () =>
                 Navigator.of(context).push<void>(DrawerPage.route())),
         title: const Text('Chats'),
