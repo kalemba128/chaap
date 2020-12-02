@@ -28,4 +28,9 @@ class UserDetailsRepository {
         .snapshots()
         .map((event) => UserDetails.fromJson(event.data()));
   }
+
+  Future<UserDetails> currentUserDetails() async {
+    final snapshot = await collection.doc(_uid).get();
+    return UserDetails.fromJson(snapshot.data());
+  }
 }

@@ -1,7 +1,16 @@
 part of 'profile_editing_bloc.dart';
 
-class ProfileEditingState extends Equatable {
-  const ProfileEditingState({
+abstract class ProfileEditingState extends Equatable {
+  const ProfileEditingState();
+
+  @override
+  List<Object> get props => [];
+}
+
+class ProfileEditingInit extends ProfileEditingState {}
+
+class ProfileEditingLoaded extends ProfileEditingState {
+  const ProfileEditingLoaded({
     this.name = const Name.pure(),
     this.nameStatus = FormzStatus.pure,
   });
@@ -12,11 +21,11 @@ class ProfileEditingState extends Equatable {
   @override
   List<Object> get props => [name, nameStatus];
 
-  ProfileEditingState copyWith({
+  ProfileEditingLoaded copyWith({
     Name name,
     FormzStatus nameStatus,
   }) {
-    return ProfileEditingState(
+    return ProfileEditingLoaded(
       name: name ?? this.name,
       nameStatus: nameStatus ?? this.nameStatus,
     );

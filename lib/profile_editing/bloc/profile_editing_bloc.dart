@@ -20,7 +20,7 @@ class ProfileEditingBloc
       {@required AuthenticationRepository authenticationRepository})
       : assert(authenticationRepository != null),
         _authenticationRepository = authenticationRepository,
-        super(ProfileEditingState(name: Name.dirty()));
+        super(ProfileEditingInit());
 
   final AuthenticationRepository _authenticationRepository;
 
@@ -28,15 +28,17 @@ class ProfileEditingBloc
   Stream<ProfileEditingState> mapEventToState(
     ProfileEditingEvent event,
   ) async* {
-    if (event is NameChanged) {
+    if (event is LoadDetails) {
+      loadDetails();
+    } else if (event is NameChanged) {
       nameChanged(event.value);
     } else if (event is NameUpdated) {
       updateName();
     }
-    // TODO: implement mapEventToState
   }
 
   void nameChanged(String value) {
+    final state = (this.state as ProfileEditingLoaded);
     final name = Name.dirty(value);
     emit(state.copyWith(
       name: name,
@@ -45,6 +47,7 @@ class ProfileEditingBloc
   }
 
   Future<void> updateName() async {
+    final state = (this.state as ProfileEditingLoaded);
     final name = state.name.value;
     if (!state.nameStatus.isValidated) return;
     emit(state.copyWith(nameStatus: FormzStatus.submissionInProgress));
@@ -57,9 +60,17 @@ class ProfileEditingBloc
   }
 
   Future<void> updateUserDetails() async {
+    final state = (this.state as ProfileEditingLoaded);
     final uid = _authenticationRepository.currentUser.uid;
     final usrRepo = UserDetailsRepository(uid: uid);
     final details = UserDetails(name: state.name.value, photo: 'newPhoto');
     await usrRepo.updateUserDetails(details);
+  }
+
+  Future<void> loadDetails() async {
+    final user = _authenticationRepository.currentUser;
+    final usrRepo = UserDetailsRepository(uid: user.uid);
+    final details = await usrRepo.currentUserDetails();
+    emit(ProfileEditingLoaded(name: Name.dirty(details.name)));
   }
 }

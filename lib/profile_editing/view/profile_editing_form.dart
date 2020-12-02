@@ -1,3 +1,4 @@
+import 'package:chaap/authentication/models/name.dart';
 import 'package:chaap/profile_editing/bloc/profile_editing_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,14 +26,15 @@ class ProfileEditingForm extends StatelessWidget {
 class _NameInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // final user = context.select((AuthenticationBloc bloc) => bloc.state.user);
+    final bloc = BlocProvider.of<ProfileEditingBloc>(context);
     return BlocBuilder<ProfileEditingBloc, ProfileEditingState>(
-      buildWhen: (previous, current) =>
-          (previous.name != current.name) ||
-          (previous.nameStatus != current.nameStatus),
-      builder: (context, state) {
+      builder: (context, _state) {
+        if (_state is ProfileEditingInit) {
+          bloc.add(LoadDetails());
+          return CircularProgressIndicator();
+        }
+        final state = _state as ProfileEditingLoaded;
         Widget suffixIcon;
-
         if (state.nameStatus == FormzStatus.pure)
           suffixIcon = Icon(Icons.edit);
         else if (state.nameStatus == FormzStatus.valid)

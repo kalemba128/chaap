@@ -7,6 +7,10 @@ abstract class ProfileEditingEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class LoadDetails extends ProfileEditingEvent {
+  const LoadDetails();
+}
+
 class NameChanged extends ProfileEditingEvent {
   const NameChanged(this.value);
   final String value;
