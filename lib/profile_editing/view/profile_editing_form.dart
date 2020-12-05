@@ -1,24 +1,79 @@
-import 'package:chaap/authentication/models/name.dart';
+import 'dart:io';
+
 import 'package:chaap/profile_editing/bloc/profile_editing_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-
 import 'package:formz/formz.dart';
 
 class ProfileEditingForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _NameInput(),
-          ],
-        ),
-      ),
+    return BlocBuilder<ProfileEditingBloc, ProfileEditingState>(
+      builder: (context, state) {
+        if (state is ProfileEditingInit) {
+          BlocProvider.of<ProfileEditingBloc>(context).add(LoadDetails());
+          return CircularProgressIndicator();
+        }
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _PhotoInput(),
+                _NameInput(),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _PhotoInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ProfileEditingBloc, ProfileEditingState>(
+      builder: (context, _state) {
+        final state = _state as ProfileEditingLoaded;
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 60),
+          child: Image.network(
+            state.photoURL,
+            width: 200,
+            height: 200,
+            fit: BoxFit.cover,
+            loadingBuilder: (BuildContext context, Widget child,
+                ImageChunkEvent loadingProgress) {
+              return Stack(alignment: AlignmentDirectional.center, children: [
+                ClipOval(
+                  child: loadingProgress == null
+                      ? child
+                      : Container(
+                          width: 200,
+                          height: 200,
+                          color: Colors.white.withAlpha(100),
+                        ),
+                ),
+                IconButton(
+                    icon: loadingProgress == null
+                        ? Icon(
+                            Icons.add_circle,
+                            color: Colors.white.withAlpha(150),
+                          )
+                        : CircularProgressIndicator(),
+                    iconSize: 60,
+                    onPressed: () {
+                      context.read<ProfileEditingBloc>().add(PhotoChanged());
+                    })
+              ]);
+            },
+          ),
+        );
+      },
     );
   }
 }
@@ -26,13 +81,9 @@ class ProfileEditingForm extends StatelessWidget {
 class _NameInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final bloc = BlocProvider.of<ProfileEditingBloc>(context);
     return BlocBuilder<ProfileEditingBloc, ProfileEditingState>(
+      buildWhen: (prev, curr) => curr is ProfileEditingLoaded,
       builder: (context, _state) {
-        if (_state is ProfileEditingInit) {
-          bloc.add(LoadDetails());
-          return CircularProgressIndicator();
-        }
         final state = _state as ProfileEditingLoaded;
         Widget suffixIcon;
         if (state.nameStatus == FormzStatus.pure)

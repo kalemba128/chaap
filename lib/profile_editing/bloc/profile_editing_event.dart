@@ -24,3 +24,9 @@ class NameUpdated extends ProfileEditingEvent {
   @override
   List<Object> get props => [];
 }
+
+class PhotoChanged extends ProfileEditingEvent {
+  const PhotoChanged();
+  @override
+  List<Object> get props => [];
+}
